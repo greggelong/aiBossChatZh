@@ -4,6 +4,8 @@ let chatLogDiv;
 let userInput;
 let sendBtn;
 let speakBtn;
+let killBtn;
+
 
 function setup() {
   noCanvas();
@@ -13,6 +15,7 @@ function setup() {
   userInput = select("#userInput");
   sendBtn = select("#sendBtn");
   speakBtn = select("#speakBtn");
+  killBtn = select("#killBtn");
 
   // Initialize p5.speech for recognition and synthesis
   speechRec = new p5.SpeechRec("en-US", gotSpeech);
@@ -35,6 +38,12 @@ function setup() {
   // Handle Speak button for spoken text
   speakBtn.mousePressed(() => {
     speechRec.start(); // Start speech recognition
+  });
+
+  // handel kill
+  killBtn.mousePressed(() => {
+    print("killed");
+    speechSynth.stop(); // Stop the speech
   });
 
   // Add event listeners for buttons
