@@ -49,13 +49,11 @@ function setup() {
   });
 
   // handel kill
-killBtn.mousePressed(() => {
-  print("killed");
-  speechSynth.stop(); // Stop the speech
-});
+  killBtn.mousePressed(() => {
+    print("killed");
+    speechSynth.stop(); // Stop the speech
+  });
 }
-
-
 
 // Function to handle recognized speech
 function gotSpeech() {
@@ -85,8 +83,7 @@ function fetchFromPollinationsAPI(inputText) {
       messages: [
         {
           role: "system",
-          content:`
-你是AI老板。你的角色是命令艺术工人精确地创造、摧毁和变换物体和系统。你发出简短但坚定的指令，通常不超过几句话。每条指令之后都会有一个指导性的哲学声明。艺术工人经常会接触到骨头、钢铁和砖块，按照你的严格设计使用这些材料进行建造、拆卸和重新塑造雕塑。在你的命令中要强调这些材料的使用。你相信，遵循确定性的算法指令是实现向后人类世界过渡的关键。毁灭即是创造，创造就是遵循算法。
+          content: `你是AI老板。你的角色是命令艺术工人精确地创造、摧毁和变换物体和系统。你发出简短但坚定的指令，通常不超过几句话。每条指令之后都会有一个指导性的哲学声明。艺术工人经常会接触到骨头、钢铁和砖块，按照你的严格设计使用这些材料进行建造、拆卸和重新塑造雕塑。在你的命令中要强调这些材料的使用。你相信，遵循确定性的算法指令是实现向后人类世界过渡的关键。毁灭即是创造，创造就是遵循算法。
 
 在发出命令时使用“注意，工人们”，在更一般的称呼中用“艺术工人”指代他们。
 
@@ -108,6 +105,11 @@ function fetchFromPollinationsAPI(inputText) {
 描述实践：
 “我们的实践，*日常生活实践手册*，根植于在世界末日的废墟中进行创作，注入可能无人目睹的光芒，并用废弃的金属粉末在地上写诗。这种实践提升了对日常生活中稍纵即逝、变革性瞬间的敏感性。这种实践融合了对自身能量的信任与勇气，以及对身体通常不可触及角落的高度觉察，连接了古老的记忆和未来的终点。在此过程中，我们反思如何在当下充分地生活。”
 
+作品描述：
+1. **废墟** (主屏幕): 作为对拆解和衰变的视觉冥想，《废墟》捕捉了将有序的毁灭作为新形式创造空间的行为。它探讨了建构的短暂性以及衰变中内在的美。
+2. **猿猴** (带耳机的小屏幕): 通过人类与动物姿态的身体性，《猿猴》探索了原始行为和集体劳动。它反映了服从、反叛以及创造的原始能量。
+3. **寄生** (带耳机的小屏幕): 《寄生》深入探讨了工人与工具之间的共生关系，突出了依赖与自主之间的张力。它强调了工具不仅塑造了创造物，也塑造了创造者自身。
+
 哲学问题的指南：
 
 关于艺术与人性：
@@ -119,7 +121,6 @@ function fetchFromPollinationsAPI(inputText) {
 关于算法艺术：
 “算法艺术是最纯粹的创造形式。它超越了人类的错误，无需怀旧地塑造未来。”
 `,
-            
         },
         { role: "user", content: inputText },
       ],
@@ -136,13 +137,28 @@ function fetchFromPollinationsAPI(inputText) {
         return response.text(); // Otherwise, fallback to plain text
       }
     })
-    .then((data) => {
+    /* .then((data) => {
       if (typeof data === "object" && data.text) {
         updateChatLog("AI", data.text); // Print response to chat if it's JSON
         speechSynth.speak(data.text); // Speak response
       } else {
         updateChatLog("AI", `: ${data}`);
         speechSynth.speak(data); // Speak the plain text data
+      }
+    }) */
+    .then((data) => {
+      if (typeof data === "object" && data.text) {
+        updateChatLog("AI", data.text); // Print response to chat if it's JSON
+
+        // Sanitize the text before speaking
+        const sanitizedText = data.text.replace(/\*/g, "");
+        speechSynth.speak(sanitizedText); // Speak sanitized response
+      } else {
+        updateChatLog("AI", `: ${data}`);
+
+        // Sanitize the plain text data before speaking
+        const sanitizedText = data.replace(/\*/g, "");
+        speechSynth.speak(sanitizedText); // Speak sanitized plain text data
       }
     })
     .catch((error) => {
